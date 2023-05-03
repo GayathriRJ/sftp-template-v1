@@ -189,7 +189,7 @@ output application/json
 		<on-error-continue enableNotifications="true"
 			logException="true" doc:name="On Error Continue"
 			doc:id="8c11fba9-2b32-4304-b295-62f3ce88ce6e"
-			type="HTTP:CONNECTIVITY">
+			type="HTTP:CONNECTIVITY,HTTP:RETRY_EXHAUSTED">
 			<ee:transform
 				doc:name="Set httStatus 500 and set errorResponse"
 				doc:id="0f58eca9-dcc7-432f-a710-8b2a9080fd4b">

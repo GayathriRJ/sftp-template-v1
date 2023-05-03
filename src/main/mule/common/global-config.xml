@@ -6,13 +6,18 @@
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd
 http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
-	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="2d44b76e-2605-41a0-849e-34602fb69580" >
+	<http:listener-config name="apiHttpListnerConfig" doc:name="apiHttpListnerConfig" doc:id="2d44b76e-2605-41a0-849e-34602fb69580" >
 		<http:listener-connection host="0.0.0.0" port="8081" />
 	</http:listener-config>
-	<configuration doc:name="Configuration" doc:id="5b67f674-dc60-4568-9910-03ebeb637ca8" defaultErrorHandler-ref="Error_Handler" />
+	<configuration doc:name="errorHandler Configuration" doc:id="5b67f674-dc60-4568-9910-03ebeb637ca8" defaultErrorHandler-ref="Error_Handler" />
 	<sftp:config name="SFTP_Config" doc:name="SFTP Config" doc:id="8e573364-5b58-4463-a5e0-df80977eb625" >
 		<sftp:connection workingDir="${sftp.workingDir}" host="localhost" username="$" />
 	</sftp:config>
-	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="c5b1ef40-27e0-46d6-9974-334bcbc52b4d" file="properties\secure-config-${env}.yaml" key="${secure.key}" />
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="c5b1ef40-27e0-46d6-9974-334bcbc52b4d" file="properties/secure-config-${env}.yaml" key="${secure.key}" />
 	<global-property doc:name="Global Property" doc:id="882d0528-21de-4c3a-b214-38f4d2bee980" name="env" value="dev" />
+	<http:request-config name="HTTP_Request_Backend_Config" doc:name="backendSystemHttpRequest" doc:id="40d1ee29-1383-4ca2-87b2-b831a324c45f" basePath="/backend" >
+		<http:request-connection host="localhost" port="8081" />
+	</http:request-config>
+	<configuration-properties doc:name="CommonConfigProperties" doc:id="8c1e628d-ec30-4df6-90b4-f422a3ff92be" file="properties/common-config.yaml" />
+	<configuration-properties doc:name="envConfigProperties" doc:id="c50d6927-1e8b-468d-b409-117ba1a5df9d" file="properties/config-${env}.yaml" />
 </mule>

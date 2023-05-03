@@ -1,20 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 	<flow name="sftp-process-implementaionFlow" doc:id="25a623fb-0283-4ca7-befb-a19c3080bcce" >
-		<logger level="INFO" doc:name="Logger" doc:id="960cf6ae-51f9-4f1b-ba6f-67eeda7820ec" message="Request file processing started"/>
-		<ee:transform doc:name="Transform Message" doc:id="600b3258-1f53-4510-9ac6-3be0ad9bdf04" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+		<logger level="INFO" doc:name="Log-Start" doc:id="960cf6ae-51f9-4f1b-ba6f-67eeda7820ec" message="Request file processing started for #[vars.transactionId]"/>
+		<try doc:name="Try" doc:id="b9698a96-f481-467b-acb3-fa5a12bff36d" >
+			<until-successful maxRetries="3" doc:name="Until Successful" doc:id="1aecad40-d4cf-4588-98d7-ce55124d57d3" millisBetweenRetries="20000">
+				<http:request method="GET" doc:name="RequestToBackend" doc:id="95ac3fed-00d1-4ac7-b229-82492092d0ec" url="/backend" config-ref="HTTP_Request_Backend_Config" />
+			</until-successful>
+			<error-handler >
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="92703331-5fe0-4664-8f28-337ff988367c" type="HTTP:RETRY_EXHAUSTED">
+					<ee:transform doc:name="Transform Message" doc:id="478a7ca7-9d36-4429-bb04-d753889d741f" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
 output application/java
 ---
 {
 }]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<logger level="INFO" doc:name="Log-Error" doc:id="71371030-ca2a-4920-b1d9-a08ebf2e46cb" message="Error While calling backend system for #[vars.transactionId]"/>
+				</on-error-propagate>
+			</error-handler>
+		</try>
+		<ee:transform doc:name="ResponseFromBackend" doc:id="600b3258-1f53-4510-9ac6-3be0ad9bdf04" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="0e6b9b7b-a922-4c7e-9e47-6c93d5ca73c8" message="Response from backend system: #[payload]"/>
+		<logger level="INFO" doc:name="Log-End" doc:id="0e6b9b7b-a922-4c7e-9e47-6c93d5ca73c8" message="Response from backend system for #[vars.transactionId]: #[payload]"/>
+		<error-handler ref="Error_Handler" />
 	</flow>
 </mule>

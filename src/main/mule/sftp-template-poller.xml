@@ -18,7 +18,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 				<ee:set-variable variableName="transactionId" ><![CDATA[%dw 2.0
 output application/java
 ---
-attributes."x-correlation-id" default correlationId]]></ee:set-variable>
+attributes."x-root-correlation-id" default correlationId]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
 		<logger level="INFO" doc:name="Log-Start" doc:id="eb83fc01-acbe-45ac-9743-855382c1ab5c" message="Start of transaction for transaction-id #[vars.transactionId]"/>
@@ -36,7 +36,7 @@ output application/java
 				<flow-ref doc:name="Flow Reference" doc:id="86034791-547d-4046-96e5-20c2a0cd6f5c" name="sftp-process-implementaionFlow" />
 			</when>
 			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="b7bfc411-f41e-435e-9ed7-536425a16eca" message="Payload is Empty for transaction-id #[vars.transactionId]"/>
+				<logger level="INFO" doc:name="Log Empty Transaction" doc:id="b7bfc411-f41e-435e-9ed7-536425a16eca" message="Payload is Empty for transaction-id #[vars.transactionId]"/>
 			</otherwise>
 		</choice>
 		<ee:transform doc:name="set archive folder and filename" doc:id="60a8feb2-366b-4b04-b3db-defaaf0a4f46" >
@@ -49,5 +49,6 @@ output application/java
 			</ee:message>
 		</ee:transform>
 		<logger level="INFO" doc:name="Log-End" doc:id="2b18108b-c4a3-4d12-9613-49273484cf8e" message="End of transaction for transaction-id #[vars.transactionId]"/>
+		<error-handler ref="Error_Handler" />
 	</flow>
 </mule>
