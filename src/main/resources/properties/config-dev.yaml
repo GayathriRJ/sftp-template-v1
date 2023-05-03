@@ -1,0 +1,2 @@
+sftp:
+  workingDir:"C:\sftp working dir\inbound"

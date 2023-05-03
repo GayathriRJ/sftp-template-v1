@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<error-handler name="Error_Handler" doc:id="73e76bad-bc9d-4bf3-b85f-570ddc0c4388" >
+		<on-error-continue enableNotifications="true"
+			logException="true" doc:name="On Error Continue"
+			doc:id="0b06ac84-11e3-4720-b120-2076099eecc9"
+			type="HTTP:BAD_REQUEST">
+			<ee:transform
+				doc:name="Set httStatus 400 and set errorResponse"
+				doc:id="200a5cf0-81ac-45cc-b4bd-e82c5d93e069">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "error": {
+      "code": 400,
+      "type": "Bad Request",
+      "message": "Error validating request",
+      "source": "dbs.error.mule.bad_request"
+  }
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="ERROR" doc:name="Log-error-response" doc:id="c324261e-a75e-441e-9dd1-0a05bd4668e1" message="#[payload]"/>
+		</on-error-continue>
+		<on-error-continue enableNotifications="true"
+			logException="true" doc:name="On Error Continue"
+			doc:id="3e5c1d02-a802-4975-89e6-352b89dd6e8d"
+			type="HTTP:UNAUTHORIZED">
+			<ee:transform
+				doc:name="Set httStatus 401 and set errorResponse"
+				doc:id="76117fa6-2560-48a8-8dab-c8dba7cde2f1">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "error": {
+      "code": 401,
+      "type": "UnAuthorized",
+      "message": "Error validating request",
+      "source": "dbs.error.mule.bad_request"
+  }
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[401]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="ERROR" doc:name="Log-error-response" doc:id="46dfda71-0ca7-4afa-9a86-985a295babeb" message="#[payload]"/>
+		</on-error-continue>
+		<on-error-continue enableNotifications="true"
+			logException="true" doc:name="On Error Continue"
+			doc:id="a91168a7-c4e3-4524-8923-7f2ce2f5d154" type="HTTP:FORBIDDEN">
+			<ee:transform
+				doc:name="Set httStatus 403 and set errorResponse"
+				doc:id="12188149-91c6-4439-b88a-6bdb99ebd42c">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "error": {
+      "code": 403,
+      "type": "Forbidden",
+      "message": "Error validating request",
+      "source": "dbs.error.mule.forbidden"
+  }
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[403]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="ERROR" doc:name="Log-error-response" doc:id="c9f5184c-20f0-4c0e-a580-07bc85dc4bc2" message="#[payload]"/>
+		</on-error-continue>
+		<on-error-continue enableNotifications="true"
+			logException="true" doc:name="On Error Continue"
+			doc:id="2ac70b59-4436-4620-869e-1c85bbc937bf" type="HTTP:NOT_FOUND">
+			<ee:transform
+				doc:name="Set httStatus 404 and set errorResponse"
+				doc:id="c0695bec-1c79-4807-baab-5840ce4befc1">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "error": {
+      "code": 404,
+      "type": "Not Found",
+      "message": "Error validating request",
+      "source": "dbs.error.mule.not_found"
+  }
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[404]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="ERROR" doc:name="Log-error-resppnse" doc:id="08b98658-5f76-4d69-a2d1-2b1866efc785" message="#[payload]"/>
+		</on-error-continue>
+		<on-error-continue enableNotifications="true"
+			logException="true" doc:name="On Error Continue"
+			doc:id="e9a43072-a8a4-46f3-b688-2c436e9ce101"
+			type="HTTP:METHOD_NOT_ALLOWED">
+			<ee:transform
+				doc:name="Set httStatus 405 and set errorResponse"
+				doc:id="f30bc916-62bb-451f-92d0-68509eb23f8d">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "error": {
+      "code": 405,
+      "type": "Method Not Allowed",
+      "message": "Error validating request",
+      "source": "dbs.error.mule.method_not_allowed"
+  }
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[405]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="ERROR" doc:name="Log-error-response" doc:id="897aa9f7-f238-40d3-861d-b9055cb75156" message="#[payload]"/>
+		</on-error-continue>
+		<on-error-continue enableNotifications="true"
+			logException="true" doc:name="On Error Continue"
+			doc:id="20fcf241-5f94-4539-a05c-ee3811ba258a"
+			type="HTTP:UNSUPPORTED_MEDIA_TYPE">
+			<ee:transform
+				doc:name="Set httStatus 415 and set errorResponse"
+				doc:id="11d61400-1660-4fd0-8acf-cf77ec913947">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "error": {
+      "code": 415,
+      "type": "UnSupported Media Type",
+      "message": "Error validating request",
+      "source": "dbs.error.mul.unsupported_media_type"
+  }
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[415]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="ERROR" doc:name="Log-error-response" doc:id="7a3fffce-c2df-43ef-89fe-e1fe05426455" message="#[payload]"/>
+		</on-error-continue>
+		<on-error-continue enableNotifications="true"
+			logException="true" doc:name="On Error Continue"
+			doc:id="0fd6a311-842b-4463-a973-d1e8fd1cdea8"
+			type="HTTP:TIMEOUT">
+			<ee:transform
+				doc:name="Set httStatus 504 and set errorResponse"
+				doc:id="c3b0cdac-3b6e-4986-84d6-8aa304da9ac1">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "error": {
+      "code": 504,
+      "type": "Timeout",
+      "message": "Error validating request",
+      "source": "dbs.error.mule.timeout"
+  }
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[504]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="ERROR" doc:name="Log-error-response" doc:id="00cd2ff0-27bf-47f8-9565-b3c2226ab016" message="#[payload]"/>
+		</on-error-continue>
+		<on-error-continue enableNotifications="true"
+			logException="true" doc:name="On Error Continue"
+			doc:id="8c11fba9-2b32-4304-b295-62f3ce88ce6e"
+			type="HTTP:CONNECTIVITY">
+			<ee:transform
+				doc:name="Set httStatus 500 and set errorResponse"
+				doc:id="0f58eca9-dcc7-432f-a710-8b2a9080fd4b">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "error": {
+      "code": 500,
+      "type": "Connectivity",
+      "message": "Error validating request",
+      "source": "dbs.error.mule.connectivity"
+  }
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus" ><![CDATA[500]]></ee:set-variable>
+				
+</ee:variables>
+			</ee:transform>
+			<logger level="ERROR" doc:name="Log-error-response" doc:id="a3e75a41-a1a7-4a5a-bd64-62b7c5161c46" message="#[payload]"/>
+		</on-error-continue>
+		<on-error-continue enableNotifications="true"
+			logException="true" doc:name="On Error Continue"
+			doc:id="b8e38026-eefc-4f2a-85ec-3eb11887ad26"
+			type="ANY">
+			<ee:transform
+				doc:name="Set httStatus 500 and set errorResponse"
+				doc:id="749af834-ae79-4f0e-8738-bab79c2cf28b">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "error": {
+      "code": 500,
+      "type": "Internal Server Error",
+      "message": "Error validating request",
+      "source": "dbs.error.mule.internal_server_error"
+  }
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[500]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="ERROR" doc:name="Log-errror-response" doc:id="cfa4962e-0f28-4355-9100-3759cad26ca4" message="#[payload]"/>
+		</on-error-continue>
+	</error-handler>
+</mule>

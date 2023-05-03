@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="2d44b76e-2605-41a0-849e-34602fb69580" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<configuration doc:name="Configuration" doc:id="5b67f674-dc60-4568-9910-03ebeb637ca8" defaultErrorHandler-ref="Error_Handler" />
+	<sftp:config name="SFTP_Config" doc:name="SFTP Config" doc:id="8e573364-5b58-4463-a5e0-df80977eb625" >
+		<sftp:connection workingDir="${sftp.workingDir}" host="localhost" username="$" />
+	</sftp:config>
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="c5b1ef40-27e0-46d6-9974-334bcbc52b4d" file="properties\secure-config-${env}.yaml" key="${secure.key}" />
+	<global-property doc:name="Global Property" doc:id="882d0528-21de-4c3a-b214-38f4d2bee980" name="env" value="dev" />
+</mule>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="sftp-template-pollerFlow" doc:id="ddb1e795-2bbe-4bc1-aab0-07d878cab2bf" >
+		<sftp:listener doc:name="On New or Updated File" doc:id="c68515d2-8fb9-44c3-af89-26b778812f78" config-ref="SFTP_Config">
+			<scheduling-strategy >
+				<fixed-frequency />
+			</scheduling-strategy>
+		</sftp:listener>
+		<ee:transform doc:name="set transaction Id" doc:id="1d0b690d-db32-41fe-a013-4475b7f46a24" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="transactionId" ><![CDATA[%dw 2.0
+output application/java
+---
+attributes."x-correlation-id" default correlationId]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="INFO" doc:name="Log-Start" doc:id="eb83fc01-acbe-45ac-9743-855382c1ab5c" message="Start of transaction for transaction-id #[vars.transactionId]"/>
+		<choice doc:name="orignalPayload" doc:id="b552255e-fec4-4b83-8646-90affb7aab8c" >
+			<when expression="sizeOf(vars.originalPayload) &gt; 0">
+				<ee:transform doc:name="payload transformation to target" doc:id="819fee49-8770-4431-8323-c5827a963071" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<flow-ref doc:name="Flow Reference" doc:id="86034791-547d-4046-96e5-20c2a0cd6f5c" name="sftp-process-implementaionFlow" />
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="b7bfc411-f41e-435e-9ed7-536425a16eca" message="Payload is Empty for transaction-id #[vars.transactionId]"/>
+			</otherwise>
+		</choice>
+		<ee:transform doc:name="set archive folder and filename" doc:id="60a8feb2-366b-4b04-b3db-defaaf0a4f46" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Log-End" doc:id="2b18108b-c4a3-4d12-9613-49273484cf8e" message="End of transaction for transaction-id #[vars.transactionId]"/>
+	</flow>
+</mule>
